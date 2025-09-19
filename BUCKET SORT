@@ -1,0 +1,66 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+//Ranee Mikaella V. Gutierrez
+//COM 242
+public class BucketSort {
+    public static void main(String[] args) {
+        System.out.println("Bucket sort in Java");
+
+        int[] input = {80, 50, 30, 10, 90, 60, 0, 70, 40, 20, 50};
+
+        System.out.println("Integer array before sorting:");
+        System.out.println(Arrays.toString(input));
+
+        bucketSort(input);
+
+        System.out.println("Integer array after sorting using bucket sort algorithm:");
+        System.out.println(Arrays.toString(input));
+    }
+
+    public static void bucketSort(int[] input) {
+        if (input.length == 0)
+            return;
+
+        int[] config = hashConfig(input);
+        int maxValue = config[0];
+        int bucketCount = config[1];
+
+        List<Integer>[] buckets = new List[bucketCount];
+        for (int i = 0; i < bucketCount; i++) {
+            buckets[i] = new ArrayList<>();
+        }
+
+        for (int value : input) {
+            int index = hash(value, maxValue, bucketCount);
+            buckets[index].add(value);
+        }
+
+        int idx = 0;
+        for (List<Integer> bucket : buckets) {
+            Collections.sort(bucket);
+            for (int value : bucket) {
+                input[idx++] = value;
+            }
+        }
+    }
+
+    private static int[] hashConfig(int[] input) {
+        int max = input[0];
+        for (int i = 1; i < input.length; i++) {
+            if (input[i] > max) {
+                max = input[i];
+            }
+        }
+
+        int bucketCount = (int) Math.sqrt(input.length);
+        return new int[]{max, bucketCount + 1};
+    }
+
+
+    private static int hash(int value, int max, int bucketCount) {
+        return (value * (bucketCount - 1)) / max;
+    }
+}
